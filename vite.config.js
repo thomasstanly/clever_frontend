@@ -6,7 +6,9 @@ export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
-      external: ['react-big-calendar/lib/css/react-big-calendar.css'],
+      external: ['react-big-calendar/lib/css/react-big-calendar.css',
+        'moment',
+      ],
     },
   },
 })
