@@ -22,7 +22,7 @@ input[type="number"]::-webkit-outer-spin-button {
         border-radius: 10px;
         padding: 10px 70px;
 
-        span {
+        .heading {
             text-align: center;
             font-size: 50px;
             font-weight: bold;

@@ -13,6 +13,7 @@ import './Style.css'
 const Login = () => {
 
    const [Show1, setShow1] = useState(false)
+   const [credentials, setCredentials] = useState(true)
 
    const toggle = () => {
       setShow1(prevState => !prevState);
@@ -20,7 +21,7 @@ const Login = () => {
    }
    const [loginData, setLoginData] = useState({
       email: "",
-      otp_email:"",
+      otp_email: "",
       password: "",
       otp: "",
    })
@@ -108,37 +109,54 @@ const Login = () => {
       <>
          <div className='Container'>
             <div className='row'>
-               <span>Login</span>
+               <span className='heading'>Login</span>
                <form action="" onSubmit={handleSubmit}>
-                  <div className='email'>
-                     <label className='label' htmlFor="">Email</label>
-                     <input className='form-control' type="email" name="email" value={loginData.email} onChange={handleOnchange}  />
-                  </div>
-                  <div>
-                     <label className='label' htmlFor="">Password</label>
-                     <input id='form3Example4cdg' className='form-control' type={Show1 ? "text" : "password"} name="password" value={loginData.password} onChange={handleOnchange} />
-                     {Show1 ? <FaEye className='eye' onClick={() => toggle()} /> : <FaEyeSlash className='eye' onClick={() => toggle()} />}
-                  </div>
+                  {
+                     credentials ? (
+                        <>
+                           <div className='email'>
+                              <label className='label' htmlFor="">Email</label>
+                              <input className='form-control' type="email" name="email" value={loginData.email} onChange={handleOnchange} />
+                           </div>
+                           <div>
+                              <label className='label' htmlFor="">Password</label>
+                              <input id='form3Example4cdg' className='form-control' type={Show1 ? "text" : "password"} name="password" value={loginData.password} onChange={handleOnchange} />
+                              {Show1 ? <FaEye className='eye' onClick={() => toggle()} /> : <FaEyeSlash className='eye' onClick={() => toggle()} />}
+                           </div>
+                        </>
 
-                  <p>or</p>
-                  <div className='flex justify-center items-end'>
-                     <div className='email w-3/4'>
-                        <label className='label' htmlFor="">Email</label>
-                        <input className='form-control' type="email" name="otp_email" value={loginData.otp_email} onChange={handleOnchange} />
-                     </div>
-                     <button className='form-control ml-2 mb-1 w-1/5' type='submit' onClick={handleOtpClick}>Submit</button>
-                  </div>
-                  <div>
-                     <label className='label' htmlFor="">OTP</label>
-                     <input id='form3Example5cdg' className='form-control' type={Show1 ? "text" : "password"} name="otp" value={loginData.otp} onChange={handleOnchange} />
-                     {Show1 ? <FaEye className='eye' onClick={() => toggle()} /> : <FaEyeSlash className='eye' onClick={() => toggle()} />}
-                  </div>
+                     ) : (
+                        <>
+                           <div className='flex justify-center items-end'>
+                              <div className='email w-3/4'>
+                                 <label className='label' htmlFor="">Email</label>
+                                 <input className='form-control' type="email" name="otp_email" value={loginData.otp_email} onChange={handleOnchange} />
+                              </div>
+                              <button className='form-control ml-2 mb-1 w-1/5' type='button' onClick={handleOtpClick}>Submit</button>
+                           </div>
+                           <div>
+                              <label className='label' htmlFor="">OTP</label>
+                              <input id='form3Example5cdg' className='form-control' type={Show1 ? "text" : "password"} name="otp" value={loginData.otp} onChange={handleOnchange} />
+                              {Show1 ? <FaEye className='eye' onClick={() => toggle()} /> : <FaEyeSlash className='eye' onClick={() => toggle()} />}
+                           </div>
+                        </>
+                     )
+                  }
+                  <p>
+                     login &nbsp;
+                     <span className='underline hover:text-blue-600 cursor-pointer' onClick={()=>setCredentials(!credentials)}>
+                     {credentials ? 'OTP' : 'Credentials'}
+                     </span>
+                  </p>
+
                   <div>
                      <button className='form-control' type='submit'>Login</button>
                   </div>
                </form>
                <div>
-                  <p onClick={() => navigate('/signup')} style={{ cursor: 'pointer' }}>Din't have an account? Sign up now</p>
+                  <p onClick={() => navigate('/signup')} style={{ cursor: 'pointer' }}>Din't have an account?
+                     <span className='underline hover:text-blue-600 cursor-pointer'> Sign up</span>
+                  </p>
                </div>
             </div>
          </div>

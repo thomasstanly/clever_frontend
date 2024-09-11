@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import { FaEye, FaEyeSlash } from 'react-icons/fa'
@@ -11,6 +11,8 @@ const Signup = () => {
 
    const [Show1, setShow1] = useState(false)
    const [Show2, setShow2] = useState(false)
+   const [timer, setTimer] = useState(20);
+   const [isResendDisabled, setIsResendDisabled] = useState(true);
 
    const toggle = (value) => {
       if (value === 1) {
@@ -44,11 +46,13 @@ const Signup = () => {
 
    const handleResend = async () => {
       try {
-         const res = await axios.put("otp/", { email: otp.email }, { withCredentials: true })
+         const res = await axios.put("api/otp/", { email: otp.email }, { withCredentials: true })
          if (res.status === 200) {
-            setOtp({ ...otp, expiryTime: res.data.exiry })
+            setOtp({ ...otp, expiryTime: res.data.expiry })
             toast.success(res.data.message)
          }
+         setIsResendDisabled(true);
+         setTimer(20);
       } catch (error) {
          toast.error(error.response.data.message)
       }
@@ -101,7 +105,7 @@ const Signup = () => {
       else {
          console.log(formdata)
          try {
-            const res = await axios.post("api/signup/", formdata, 
+            const res = await axios.post("api/signup/", formdata,
                { withCredentials: true }
             )
 
@@ -110,7 +114,8 @@ const Signup = () => {
                console.log(otp)
                console.log(res.data)
                toast.warning(res.data.message)
-
+               setIsResendDisabled(true);
+               setTimer(20);
             }
 
          } catch (error) {
@@ -140,14 +145,26 @@ const Signup = () => {
 
    }
 
+   useEffect(() => {
+      let countdown;
+      if (timer > 0) {
+         countdown = setInterval(() => {
+            setTimer(timer - 1);
+         }, 1000);
+      } else {
+         setIsResendDisabled(false);
+      }
+      return () => clearInterval(countdown);
+   }, [timer]);
+
    return (
       <div>
          <div className='Container'>
             <div className='row'>
-               <span>Register</span>
+               <span className='heading'>Register</span>
                <form action="" onSubmit={handleSubmit}>
                   <div className='username'>
-                     <label className='label' htmlFor="">username</label>
+                     <label className='label' htmlFor="">Username</label>
                      <input className='form-control' type="text" value={formdata.username} name='username' onChange={handleOnchange} />
                   </div>
                   <div>
@@ -176,7 +193,15 @@ const Signup = () => {
                         <button className='btn' type='submit' >verify</button>
                      </div>
                      <div>
-                        <p style={{ cursor: 'pointer' }} onClick={handleResend}>resent</p>
+                        <p
+                           style={{
+                              cursor: isResendDisabled ? 'not-allowed' : 'pointer',
+                              color: isResendDisabled ? 'gray' : 'blue'
+                           }}
+                           onClick={!isResendDisabled ? handleResend : null}
+                        >
+                           Resend {isResendDisabled ? `(${timer})` : ''}
+                        </p>
                      </div>
                   </form>
                }
